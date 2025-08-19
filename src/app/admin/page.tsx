@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import useSWR from 'swr';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,39 +16,42 @@ type Order = {
   status: string;
 };
 
+const fetchOrders = async () =>{
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .order('order_number', { ascending: true });
+  if (error) throw new Error(error.message);
+  return data as Order[]; 
+};
+
 export default function AdminPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const { data: orders, error, mutate } = useSWR('orders', fetchOrders);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const { data } = await supabase
-        .from('orders')
-        .select('*')
-        .order('order_number', { ascending: true });
-      setOrders(data as Order[]);
-    };
-
-    fetchOrders();
-
-    const sub = supabase
+  React.useEffect(() => {
+    const subscription = supabase
       .channel('order-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
-        fetchOrders();
+        mutate();
       })
       .subscribe();
-
     return () => {
-      supabase.removeChannel(sub);
+      supabase.removeChannel(subscription);
     };
-  }, []);
+  }, [mutate]);
 
   const handleCall = async (id: string) => {
     await supabase
       .from('orders')
       .update({ status: 'called', called_at: new Date().toISOString() })
       .eq('id', id);
-  };
+      mutate(); // 更新後に再フェッチ
+    };
 
+  if (error) return <div>Error loading orders</div>;
+  if (!orders) return <div>Loading...</div>;
+
+  
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-xl font-bold">注文一覧</h1>
