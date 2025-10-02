@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { AddToItemButton } from './components/AddToItemButton';
+import { AddToItemButton as AddToItemButton_Pancake} from './components/AddToItemButton_Pancake';
+import { AddToItemButton as AddToItemButton_Creap } from './components/AddToItemButton_Creap';
 
 interface Topping {
   id: string;
@@ -77,11 +78,11 @@ export default function OrderPage() {
       
       {/* アイテム追加ボタン（トッピング選択機能付き） */}
       <div className="flex space-x-4">
-        <AddToItemButton
+        <AddToItemButton_Creap
           itemName="クレープ"
           onAddItem={handleAddItemToCart}
         />
-        <AddToItemButton
+        <AddToItemButton_Pancake
           itemName="パンケーキ"
           onAddItem={handleAddItemToCart}
         />

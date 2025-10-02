@@ -13,10 +13,11 @@ interface ToppingModalProps {
 
 // ダミーのトッピングデータ
 const availableToppings: Topping[] = [
-  { id: 't1', name: '生クリーム', price: 100 },
-  { id: 't2', name: 'チョコレートソース', price: 50 },
-  { id: 't3', name: 'バナナ', price: 150 },
-  { id: 't4', name: 'アイスクリーム', price: 200 },
+  { id: 'c1', name: 'はちみつ', price: 100 },
+  { id: 'c2', name: 'チョコレートソース', price: 100 },
+  { id: 'c3', name: 'ケチャップ', price: 100 },
+  { id: 'c4', name: 'マスタード', price: 100 },
+  { id: 'c5', name: 'メープルシロップ', price: 100 }
 ];
 
 export const ToppingModal: React.FC<ToppingModalProps> = ({ onConfirm, onClose }) => {
