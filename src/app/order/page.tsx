@@ -2,23 +2,28 @@
 
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { AddToItemButton as AddToItemButton_Pancake} from './components/AddToItemButton_Pancake';
-import { AddToItemButton as AddToItemButton_Creap } from './components/AddToItemButton_Creap';
+// 1. 統合されたコンポーネントをインポート
+import { AddToItemButton } from './components/AddToItemButton';
 
-interface Topping {
-  id: string;
-  name: string;
-  price: number;
+// --- 型定義 ---
+// ToppingModalやAddToItemButtonから渡される、数量付きのトッピングデータ
+interface SelectedTopping {
+    id: string;
+    name: string;
+    price: number;
+    qty: number;
 }
 
+// CartItem の型定義
 interface CartItem {
     name: string;
     qty: number;
-    toppings: string[]; // カートの状態には名前のみを保存
+    // カートには、トッピング名とその数量のみを保存
+    toppings: { name: string; qty: number }[]; 
 }
 // -----------------
 
-// Supabaseクライアントの初期化
+// Supabaseクライアントの初期化 (元のファイルから流用)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -29,33 +34,39 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function OrderPage() {
+  // itemsの状態をトッピング情報を含む新しい型に変更
   const [items, setItems] = useState<CartItem[]>([]);
   const [success, setSuccess] = useState(false);
 
-  // AddToItemButtonから呼び出される、アイテム追加処理
-  const handleAddItemToCart = (itemName: string, selectedToppings: Topping[]) => {
-    const toppingNames = selectedToppings.map(t => t.name).sort();
+  // 2. トッピングと数量を含むアイテム追加処理
+  const handleAddItemToCart = (itemName: string, selectedToppings: SelectedTopping[], newQty: number) => { 
+    
+    // トッピングの配列を、比較しやすいように整形してソート
+    const toppingDataForComparison = selectedToppings
+      .map(t => ({ name: t.name, qty: t.qty }))
+      .sort((a, b) => a.name.localeCompare(b.name));
 
     setItems((prev) => {
-      // 名前とトッピングリストが完全に一致する既存のアイテムを探す
+      // 既存のアイテムを検索: メインアイテム名と、トッピングの構成が完全に一致するか
       const existing = prev.find(
-        (i) => i.name === itemName && JSON.stringify(i.toppings.sort()) === JSON.stringify(toppingNames)
+        (i) => i.name === itemName && 
+               JSON.stringify(i.toppings.sort((a, b) => a.name.localeCompare(b.name))) === JSON.stringify(toppingDataForComparison)
       );
 
       if (existing) {
-        // 完全に一致するアイテムがあれば数量を +1
+        // 完全に一致するアイテムがあれば、受け取った数量 (newQty) を加算
         return prev.map((i) =>
-          i === existing ? { ...i, qty: i.qty + 1 } : i
+          i === existing ? { ...i, qty: i.qty + newQty } : i
         );
       }
       
       // 一致するアイテムがなければ、新規アイテムとして追加
-      return [...prev, { name: itemName, qty: 1, toppings: toppingNames }];
+      return [...prev, { name: itemName, qty: newQty, toppings: toppingDataForComparison }];
     });
   };
-  
+
+  // 3. 注文送信ロジック (元のファイルから流用し、itemsをクリアする処理を追加)
   const handleSubmit = async () => {
-    //Supabaseのテーブル定義に応じて、itemsの構造変更が必要です
     const { error } = await supabase.from('orders').insert([
       {
         items,
@@ -76,13 +87,13 @@ export default function OrderPage() {
     <div className="p-4 space-y-4">
       <h1 className="text-xl font-bold">P-lab 注文システム</h1>
       
-      {/* アイテム追加ボタン（トッピング選択機能付き） */}
+      {/* 4. 統合されたボタンコンポーネントを使用 */}
       <div className="flex space-x-4">
-        <AddToItemButton_Creap
+        <AddToItemButton
           itemName="クレープ"
           onAddItem={handleAddItemToCart}
         />
-        <AddToItemButton_Pancake
+        <AddToItemButton
           itemName="パンケーキ"
           onAddItem={handleAddItemToCart}
         />
@@ -90,15 +101,21 @@ export default function OrderPage() {
 
       <div>
         <h2 className="text-lg">選択中：</h2>
+        {/* 5. カートの中身をトッピング数量付きで表示 */}
         {items.map((item, index) => (
-          <p key={index} className="border-b pb-1">
-            <span className="font-semibold">{item.name}</span>: {item.qty} 個
+          <div key={index} className="border-b pb-1 mb-2">
+            <p>
+                <span className="font-semibold">{item.name}</span>: {item.qty} 個
+            </p>
+            {/* トッピング情報も数量付きで表示 */}
             {item.toppings.length > 0 && (
-              <span className="text-sm text-gray-600 ml-2">
-                （トッピング: {item.toppings.join(', ')}）
-              </span>
+              <ul className="text-sm text-gray-600 ml-4 list-disc">
+                {item.toppings.map((t, tIndex) => (
+                    <li key={tIndex}>{t.name}: {t.qty} 個</li>
+                ))}
+              </ul>
             )}
-          </p>
+          </div>
         ))}
         {items.length === 0 && <p>カートは空です。</p>}
       </div>
@@ -114,4 +131,4 @@ export default function OrderPage() {
       {success && <p className="text-green-600">注文完了！</p>}
     </div>
   );
-}
+};
