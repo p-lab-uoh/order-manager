@@ -8,14 +8,18 @@ interface SelectedTopping { id: string; name: string; price: number; qty: number
 // トッピングデータ：アイテム名でキー分け
 const TOPPINGS_DATA: { [key: string]: Topping[] } = {
     'クレープ': [
-        { id: 't1', name: '生クリーム', price: 100 },
-        { id: 't2', name: 'チョコソース', price: 50 },
-        { id: 't3', name: 'バナナ', price: 150 },
+        { id: 'c1', name: '蜂蜜', price: 200 },
+        { id: 'c2', name: 'メープルシロップ', price: 200 },
+        { id: 'c3', name: 'チョコソース', price: 200 },
+        { id: 'c4', name: 'ケチャップ', price: 200 },
+        { id: 'c5', name: 'マスタード', price: 200 },
     ],
     'パンケーキ': [
-        { id: 't4', name: 'メープルシロップ', price: 80 },
-        { id: 't5', name: 'バター', price: 30 },
-        { id: 't6', name: 'アイスクリーム', price: 200 },
+        { id: 'p1', name: '蜂蜜', price: 200 },
+        { id: 'p2', name: 'メープルシロップ', price: 200 },
+        { id: 'p3', name: 'チョコソース', price: 200 },
+        { id: 'p4', name: 'ケチャップ', price: 200 },
+        { id: 'p5', name: 'マスタード', price: 200 },
     ],
 };
 
