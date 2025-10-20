@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
-// 1. 統合されたコンポーネントをインポート
+
 import { AddToItemButton } from './components/AddToItemButton';
 
 // --- 型定義 ---
-// ToppingModalやAddToItemButtonから渡される、数量付きのトッピングデータ
 interface SelectedTopping {
     id: string;
     name: string;
@@ -18,7 +17,6 @@ interface SelectedTopping {
 interface CartItem {
     name: string;
     qty: number;
-    // カートには、トッピング名とその数量のみを保存
     toppings: { name: string; qty: number }[]; 
 }
 // -----------------
