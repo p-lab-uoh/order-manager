@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { ToppingModal } from './ToppingModal'; 
 
 // --- 型定義 ---
-interface SelectedTopping { id: string; name: string; price: number; qty: number; }
+interface SelectedTopping { 
+  id: string; 
+  name: string; 
+  price: number; 
+  qty: number; 
+}
 // -----------------
 
 interface AddToItemButtonProps {
