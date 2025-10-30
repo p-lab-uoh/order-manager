@@ -6,12 +6,27 @@ import { CartItem, SelectedTopping } from "@/types";
 import { createOrder } from "@/services/orders/create";
 import { MENU_ITEMS } from "@/menu";
 import { Button } from "@/components/ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function OrderPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [selectedTag, setSelectedTag] = useState<number>(1);
 
   const [success, setSuccess] = useState(false);
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: ({
+      items,
+      selectedTag,
+    }: {
+      items: CartItem[];
+      selectedTag: number;
+    }) => createOrder(items, selectedTag),
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
 
   const handleAddItemToCart = (
     itemName: "パンケーキ" | "クレープ",
@@ -51,7 +66,8 @@ export default function OrderPage() {
 
   const handleSubmit = async () => {
     try {
-      await createOrder(items, selectedTag);
+      // await createOrder(items, selectedTag);
+      await mutation.mutateAsync({ items, selectedTag });
 
       setSelectedTag(selectedTag === 25 ? 1 : selectedTag + 1);
       setSuccess(true);

@@ -15,7 +15,7 @@ export default function OrderList({
     queryKey: ["orders"],
     queryFn: listAllOrders,
     initialData,
-    refetchInterval: 5000,
+    refetchInterval: 15000,
   });
 
   data.sort((a, b) => {

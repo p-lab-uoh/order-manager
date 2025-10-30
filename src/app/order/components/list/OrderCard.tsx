@@ -62,6 +62,14 @@ export default function OrderCard(props: {
     },
   });
 
+  const handleOrderCall = () => {
+    callOrderMutation.mutate(order.id);
+  };
+
+  const handleOrderComplete = () => {
+    completeOrderMutation.mutate(order.id);
+  };
+
   return (
     <div className={`border rounded-md shadow-md`}>
       <div
@@ -82,14 +90,14 @@ export default function OrderCard(props: {
             <Button
               disabled={order.status !== 0}
               className="bg-green-500"
-              onClick={() => callOrderMutation.mutate(order.id)}
+              onClick={handleOrderCall}
             >
               呼び出し
             </Button>
             <Button
               disabled={order.status !== 1}
               variant="destructive"
-              onClick={() => completeOrderMutation.mutate(order.id)}
+              onClick={handleOrderComplete}
             >
               完了
             </Button>

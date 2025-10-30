@@ -17,7 +17,7 @@ export default function Home() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["orders"],
     queryFn: listAllWithoutCompletedOrders,
-    refetchInterval: 5000,
+    refetchInterval: 15000,
   });
 
   if (isLoading)
