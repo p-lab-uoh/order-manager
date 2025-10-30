@@ -1,6 +1,5 @@
 "use server";
 import { prisma } from "@/prisma";
-import { formatStatus } from "@/utils";
 
 export const listAllOrders = async () => {
   const orders = await prisma.order.findMany({
@@ -15,7 +14,7 @@ export const listAllOrders = async () => {
 
   return orders.map((o) => ({
     id: o.id,
-    status: formatStatus(o.status),
+    status: o.status,
     items: o.items.map((item) => ({
       name: item.name,
       toppings: item.toppings.map((topping) => ({

@@ -1,4 +1,6 @@
 "use client";
+
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,21 +8,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { callOrder } from "@/services/orders/call";
 import { listAllOrders } from "@/services/orders/listAll";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export default function Home() {
+export default function OrderList({
+  initialData,
+}: {
+  initialData: Awaited<ReturnType<typeof listAllOrders>>;
+}) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["orders"],
     queryFn: listAllOrders,
-    refetchInterval: 5000,
+    initialData,
+    // refetchInterval: 5000,
+  });
+
+  const queryClient = useQueryClient();
+
+  const callOrderMutation = useMutation({
+    mutationFn: (orderId: number) => callOrder(orderId, 1),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
   });
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading orders</div>;
-  if (!data) return <div>No orders found</div>;
-
-  // TODO: When update data, the list change color
 
   return (
     <div className="p-4 space-y-4">
@@ -43,6 +57,9 @@ export default function Home() {
                 ))}
               </div>
             ))}
+            <Button onClick={() => callOrderMutation.mutate(order.id)}>
+              呼び出し
+            </Button>
           </CardContent>
         </Card>
       ))}
