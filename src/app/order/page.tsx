@@ -42,6 +42,10 @@ export default function OrderPage() {
     });
   };
 
+  const handleDeleteItemFromCart = (index: number) => {
+    setItems((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async () => {
     try {
       await createOrder(items);
@@ -71,7 +75,10 @@ export default function OrderPage() {
         <h2 className="text-lg">選択中：</h2>
         {/* 5. カートの中身をトッピング数量付きで表示 */}
         {items.map((item, index) => (
-          <div key={index} className="border-b pb-1 mb-2">
+          <div
+            key={index}
+            className="flex items-center gap-2 border-b pb-1 mb-2"
+          >
             <p>
               <span className="font-semibold">{item.name}</span> {item.price} 円
             </p>
@@ -85,6 +92,12 @@ export default function OrderPage() {
                 ))}
               </ul>
             )}
+            <button
+              onClick={() => handleDeleteItemFromCart(index)}
+              className="border px-4 py-1 bg-red-500 text-white rounded"
+            >
+              削除
+            </button>
           </div>
         ))}
         {items.length === 0 && <p>カートは空です。</p>}
