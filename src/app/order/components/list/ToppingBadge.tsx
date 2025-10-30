@@ -5,6 +5,7 @@ const colored = (name: string) => {
     case "チョコソース":
       return "bg-[#6C3524]";
     case "蜂蜜":
+    case "はちみつ":
       return "bg-[#E7BB5E]";
     case "メープルシロップ":
       return "bg-[#C55A39]";

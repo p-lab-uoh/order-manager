@@ -53,7 +53,7 @@ export default function OrderPage() {
     try {
       await createOrder(items, selectedTag);
 
-      setSelectedTag(selectedTag + 1);
+      setSelectedTag(selectedTag === 25 ? 1 : selectedTag + 1);
       setSuccess(true);
       setItems([]);
     } catch (e) {

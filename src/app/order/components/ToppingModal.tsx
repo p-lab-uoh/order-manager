@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Topping, SelectedTopping } from "@/types";
 import { MENU_ITEMS, TOPPINGS_DATA } from "@/menu";
-import { Button } from "@/components/ui/button";
 
 // トッピングデータ：アイテム名でキー分け
 interface ToppingModalProps {
