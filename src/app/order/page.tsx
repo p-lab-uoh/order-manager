@@ -1,20 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { submitOrder } from '@/services/orderService';
 import { AddToItemButton } from './components/AddToItemButton';
 import { CartItem, SelectedTopping } from '@/types';
-
-// Supabaseクライアントの初期化 (元のファイルから流用)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Supabaseの環境変数が設定されていません');
-}
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function OrderPage() {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -22,7 +11,6 @@ export default function OrderPage() {
 
   const handleAddItemToCart = (itemName: string, selectedToppings: SelectedTopping[]) => {
     const toppingDataForComparison = selectedToppings
-      // .map(t => ({ name: t.name, qty: t.qty }))
       .sort((a, b) => a.name.localeCompare(b.name));
 
     setItems((prev) => {
