@@ -5,9 +5,12 @@ import { AddToItemButton } from "./components/AddToItemButton";
 import { CartItem, SelectedTopping } from "@/types";
 import { createOrder } from "@/services/orders/create";
 import { MENU_ITEMS } from "@/menu";
+import { Button } from "@/components/ui/button";
 
 export default function OrderPage() {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [selectedTag, setSelectedTag] = useState<number>(1);
+
   const [success, setSuccess] = useState(false);
 
   const handleAddItemToCart = (
@@ -48,8 +51,9 @@ export default function OrderPage() {
 
   const handleSubmit = async () => {
     try {
-      await createOrder(items);
+      await createOrder(items, selectedTag);
 
+      setSelectedTag(selectedTag + 1);
       setSuccess(true);
       setItems([]);
     } catch (e) {
@@ -101,6 +105,23 @@ export default function OrderPage() {
           </div>
         ))}
         {items.length === 0 && <p>カートは空です。</p>}
+      </div>
+
+      <h4 className="text-lg font-semibold mb-2">渡す番号札</h4>
+      <div className="grid grid-cols-5 gap-2">
+        {[...Array(25)]
+          .map((_, i) => i + 1)
+          .map((num) => (
+            <Button
+              key={num}
+              size="lg"
+              className="h-12"
+              variant={selectedTag === num ? "default" : "outline"}
+              onClick={() => setSelectedTag(num)}
+            >
+              {num}
+            </Button>
+          ))}
       </div>
 
       <button

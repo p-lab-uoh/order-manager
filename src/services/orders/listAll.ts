@@ -20,6 +20,7 @@ export const listAllWithoutCompletedOrders = async () => {
   return orders.map((o) => ({
     id: o.id,
     status: o.status,
+    tag: o.tag,
     items: o.items.map((item) => ({
       name: item.name,
       toppings: item.toppings.map((topping) => ({
@@ -44,6 +45,7 @@ export const listAllOrders = async () => {
   return orders.map((o) => ({
     id: o.id,
     status: o.status,
+    tag: o.tag,
     items: o.items.map((item) => ({
       name: item.name,
       toppings: item.toppings.map((topping) => ({

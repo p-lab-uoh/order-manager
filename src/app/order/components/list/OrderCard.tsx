@@ -33,6 +33,7 @@ export default function OrderCard(props: {
   order: {
     id: number;
     status: number;
+    tag: number;
     items: {
       name: string;
       toppings: {
@@ -72,7 +73,10 @@ export default function OrderCard(props: {
             : "bg-gray-200"
         }`}
       >
-        <div className="flex text-8xl font-extrabold">{order.id}</div>
+        <div className="flex flex-col items-center font-bold text-xl">
+          <div>番号札</div>
+          <div className="flex text-8xl font-extrabold">{order.tag}</div>
+        </div>
         {isAdmin && (
           <div className="flex flex-col gap-2">
             <Button

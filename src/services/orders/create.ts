@@ -2,11 +2,12 @@
 import { prisma } from "@/prisma";
 import { CartItem } from "@/types";
 
-export const createOrder = async (items: CartItem[]) => {
+export const createOrder = async (items: CartItem[], tag: number) => {
   try {
     await prisma.order.create({
       data: {
         status: 0,
+        tag,
         items: {
           create: items.map((item) => ({
             name: item.name,

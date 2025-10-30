@@ -11,14 +11,14 @@ export const MENU_ITEMS = [
 
 export const TOPPINGS_DATA = {
   クレープ: [
-    { name: "蜂蜜" },
+    { name: "はちみつ" },
     { name: "メープルシロップ" },
     { name: "チョコソース" },
     { name: "ケチャップ" },
     { name: "マスタード" },
   ],
   パンケーキ: [
-    { name: "蜂蜜" },
+    { name: "はちみつ" },
     { name: "メープルシロップ" },
     { name: "チョコソース" },
     { name: "ケチャップ" },

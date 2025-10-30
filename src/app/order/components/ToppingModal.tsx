@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Topping, SelectedTopping } from "@/types";
 import { MENU_ITEMS, TOPPINGS_DATA } from "@/menu";
+import { Button } from "@/components/ui/button";
 
 // トッピングデータ：アイテム名でキー分け
 interface ToppingModalProps {
@@ -20,10 +21,6 @@ export const ToppingModal: React.FC<ToppingModalProps> = ({
   const [selectedToppingQuantities, setSelectedToppingQuantities] = useState<
     SelectedTopping[]
   >([]);
-  React.useEffect(() => {
-    console.log(selectedToppingQuantities);
-  }, [selectedToppingQuantities]);
-  // ... (handleToppingQuantityChange, decrementItemQuantity, incrementItemQuantity, handleConfirm, totalToppingPrice のロジック)
 
   const handleToppingQuantityChange = (
     toppingName: Topping["name"],
@@ -39,8 +36,6 @@ export const ToppingModal: React.FC<ToppingModalProps> = ({
         return prev.filter((t) => t.name !== toppingName);
       }
 
-      // const toppingPrice =
-      //   availableToppings.find((t) => t.name === toppingName)?.price || 0;
       if (existingTopping) {
         return prev.map((t) =>
           t.name === toppingName ? { ...t, qty: newQty } : t

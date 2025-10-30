@@ -36,4 +36,5 @@ model Order {
   createdAt DateTime @default(now())
   status    Int      @default(0) // 0: pending, 1: calling 2: completed
   items     Item[]
+  tag       Int
 }
