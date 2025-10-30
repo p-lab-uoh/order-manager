@@ -1,46 +1,56 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { submitOrder } from '@/services/orderService';
-import { AddToItemButton } from './components/AddToItemButton';
-import { CartItem, SelectedTopping } from '@/types';
+import { useState } from "react";
+import { AddToItemButton } from "./components/AddToItemButton";
+import { CartItem, SelectedTopping } from "@/types";
+import { createOrder } from "@/services/orders/create";
+import { MENU_ITEMS } from "@/menu";
 
 export default function OrderPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [success, setSuccess] = useState(false);
 
-  const handleAddItemToCart = (itemName: string, selectedToppings: SelectedTopping[]) => {
-    const toppingDataForComparison = selectedToppings
-      .sort((a, b) => a.name.localeCompare(b.name));
+  const handleAddItemToCart = (
+    itemName: "パンケーキ" | "クレープ",
+    selectedToppings: SelectedTopping[]
+  ) => {
+    const toppingDataForComparison = selectedToppings.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
 
     setItems((prev) => {
       const existing = prev.find(
-        (i) => i.name === itemName &&
-          JSON.stringify(i.toppings.sort((a, b) => a.name.localeCompare(b.name))) === JSON.stringify(toppingDataForComparison)
+        (i) =>
+          i.name === itemName &&
+          JSON.stringify(
+            i.toppings.sort((a, b) => a.name.localeCompare(b.name))
+          ) === JSON.stringify(toppingDataForComparison)
       );
 
       if (existing) {
-        return prev.map((i) =>
-          i === existing ? { ...i } : i
-        );
+        return prev.map((i) => (i === existing ? { ...i } : i));
       }
-      
-      const price = selectedToppings.reduce((sum, t) => sum + (t.price * t.qty), 0);
+
+      const price =
+        MENU_ITEMS.find((item) => item.name === itemName)?.price || 0;
 
       // 一致するアイテムがなければ、新規アイテムとして追加
-      return [...prev, { name: itemName, toppings: toppingDataForComparison, price }];
+      return [
+        ...prev,
+        { name: itemName, toppings: toppingDataForComparison, price },
+      ];
     });
   };
 
   const handleSubmit = async () => {
     try {
-      await submitOrder(items); // ★変更点
+      await createOrder(items);
 
       setSuccess(true);
       setItems([]);
     } catch (e) {
       // サービス層から投げられたエラーを処理
-      alert('注文に失敗しました。管理者にお問い合わせください。');
+      alert("注文に失敗しました。管理者にお問い合わせください。");
       setSuccess(false);
     }
   };
@@ -50,10 +60,7 @@ export default function OrderPage() {
 
       {/* 4. 統合されたボタンコンポーネントを使用 */}
       <div className="flex space-x-4">
-        <AddToItemButton
-          itemName="クレープ"
-          onAddItem={handleAddItemToCart}
-        />
+        <AddToItemButton itemName="クレープ" onAddItem={handleAddItemToCart} />
         <AddToItemButton
           itemName="パンケーキ"
           onAddItem={handleAddItemToCart}
@@ -72,7 +79,9 @@ export default function OrderPage() {
             {item.toppings.length > 0 && (
               <ul className="text-sm text-gray-600 ml-4 list-disc">
                 {item.toppings.map((t, tIndex) => (
-                  <li key={tIndex}>{t.name}: {t.qty} 個</li>
+                  <li key={tIndex}>
+                    {t.name}: {t.qty} 個
+                  </li>
                 ))}
               </ul>
             )}
@@ -92,4 +101,4 @@ export default function OrderPage() {
       {success && <p className="text-green-600">注文完了！</p>}
     </div>
   );
-};
+}

@@ -1,6 +1,5 @@
 export interface Topping {
   name: string;
-  price: number;
 }
 
 export interface SelectedTopping extends Topping {
@@ -9,6 +8,6 @@ export interface SelectedTopping extends Topping {
 
 export interface CartItem {
   name: string;
-  toppings: SelectedTopping[]
+  toppings: SelectedTopping[];
   price: number;
 }

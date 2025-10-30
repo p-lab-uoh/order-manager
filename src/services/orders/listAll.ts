@@ -1,9 +1,8 @@
 "use server";
-
 import { prisma } from "@/prisma";
 import { formatStatus } from "@/utils";
 
-export const fetchOrders = async () => {
+export const listAllOrders = async () => {
   const orders = await prisma.order.findMany({
     include: {
       items: {
