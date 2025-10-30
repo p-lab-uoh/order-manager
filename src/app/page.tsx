@@ -1,13 +1,17 @@
 "use client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { listAllOrders } from "@/services/orders/listAll";
 import { useQuery } from "@tanstack/react-query";
+import OrderCard, {
+  OrderCardSkeleton,
+} from "./order/components/list/OrderCard";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 export default function Home() {
   const { data, isLoading, error } = useQuery({
@@ -16,35 +20,42 @@ export default function Home() {
     refetchInterval: 5000,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="p-4 space-y-4">
+        <OrderCardSkeleton></OrderCardSkeleton>
+      </div>
+    );
   if (error) return <div>Error loading orders</div>;
   if (!data) return <div>No orders found</div>;
 
-  // TODO: When update data, the list change color
+  const displayOrders = data
+    .filter((d) => d.status !== 2)
+    .toSorted((a, b) => b.status - a.status);
+
+  if (displayOrders.length === 0) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <span className="text-xl">😭</span>
+          </EmptyMedia>
+          <EmptyTitle>注文がありません...</EmptyTitle>
+          <EmptyDescription>
+            Pancake Lab / AIクレープは3日とも元気に営業中！！！！！！！！！！
+          </EmptyDescription>
+          <EmptyContent>
+            買いに来てね！！！！！！！！！！！！！！！！！！
+          </EmptyContent>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
   return (
     <div className="p-4 space-y-4">
-      <h1 className="text-xl font-bold">注文一覧</h1>
-      {data.map((order) => (
-        <Card key={order.id} className="border p-2">
-          <CardHeader>
-            <CardTitle>注文番号: {order.id}</CardTitle>
-            <CardDescription>状態: {order.status}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {order.items.map((item) => (
-              <div key={`${order.id}-${item.name}-${Math.random()}`}>
-                {item.name}
-                <p>トッピング:</p>
-                {item.toppings.map((topping) => (
-                  <div key={topping.name}>
-                    {topping.name} x {topping.quantity}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+      {displayOrders.map((order) => (
+        <OrderCard key={order.id} order={order} />
       ))}
     </div>
   );
