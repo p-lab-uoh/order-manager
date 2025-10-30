@@ -19,11 +19,11 @@ export default function AdminPage() {
         <div key={order.id} className="border p-2">
           <p>注文番号: {order.id}</p>
           <p>状態: {order.status}</p>
-          {order.items.map((order) => (
-            <div key={order.name}>
-              {order.name}
+          {order.items.map((item) => (
+            <div key={`${order.id}-${item.name}-${Math.random()}`}>
+              {item.name}
               <p>トッピング:</p>
-              {order.toppings.map((topping) => (
+              {item.toppings.map((topping) => (
                 <div key={topping.name}>
                   {topping.name} x {topping.quantity}
                 </div>
