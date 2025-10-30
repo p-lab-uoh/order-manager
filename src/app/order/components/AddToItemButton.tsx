@@ -1,25 +1,17 @@
 import React, { useState } from 'react';
 import { ToppingModal } from './ToppingModal'; 
-
-// --- 型定義 ---
-interface SelectedTopping { 
-  id: string; 
-  name: string; 
-  price: number; 
-  qty: number; 
-}
-// -----------------
+import { SelectedTopping } from '@/types';
 
 interface AddToItemButtonProps {
   itemName: string; 
-  onAddItem: (item: string, toppings: SelectedTopping[], qty: number) => void;
+  onAddItem: (item: string, toppings: SelectedTopping[]) => void;
 }
 
 export const AddToItemButton: React.FC<AddToItemButtonProps> = ({ itemName, onAddItem }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleConfirmToppings = (toppings: SelectedTopping[], qty: number) => {
-    onAddItem(itemName, toppings, qty);
+  const handleConfirmToppings = (toppings: SelectedTopping[]) => {
+    onAddItem(itemName, toppings);
     setIsModalOpen(false);
   };
 
