@@ -1,5 +1,5 @@
 "use client";
-import { listAllOrders } from "@/services/orders/listAll";
+import { listAllWithoutCompletedOrders } from "@/services/orders/listAll";
 import { useQuery } from "@tanstack/react-query";
 import OrderCard, {
   OrderCardSkeleton,
@@ -16,7 +16,7 @@ import {
 export default function Home() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["orders"],
-    queryFn: listAllOrders,
+    queryFn: listAllWithoutCompletedOrders,
     refetchInterval: 5000,
   });
 
@@ -29,9 +29,7 @@ export default function Home() {
   if (error) return <div>Error loading orders</div>;
   if (!data) return <div>No orders found</div>;
 
-  const displayOrders = data
-    .filter((d) => d.status !== 2)
-    .toSorted((a, b) => b.status - a.status);
+  const displayOrders = data.toSorted((a, b) => b.status - a.status);
 
   if (displayOrders.length === 0) {
     return (
