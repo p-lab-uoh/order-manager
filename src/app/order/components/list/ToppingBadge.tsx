@@ -13,6 +13,8 @@ const colored = (name: string) => {
       return "bg-[#EA5549]";
     case "マスタード":
       return "bg-[#E1AD01]";
+    case "キャラメル":
+      return "bg-[#D2691E]";
   }
 };
 
