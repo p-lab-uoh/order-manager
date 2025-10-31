@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +9,6 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Item } from "@/components/ui/item";
 import { callOrder } from "@/services/orders/call";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToppingBadge } from "./ToppingBadge";
@@ -73,7 +73,7 @@ export default function OrderCard(props: {
   return (
     <div className={`border rounded-md shadow-md`}>
       <div
-        className={`flex items-center justify-evenly p-4 border-b ${
+        className={`flex items-center justify-evenly p-3 border-b ${
           order.status === 0
             ? "bg-orange-200"
             : order.status === 1
@@ -81,10 +81,7 @@ export default function OrderCard(props: {
             : "bg-gray-200"
         }`}
       >
-        <div className="flex flex-col items-center font-bold text-xl">
-          <div>番号札</div>
-          <div className="flex text-8xl font-extrabold">{order.tag}</div>
-        </div>
+        <div className="flex text-8xl font-extrabold">{order.tag}</div>
         {isAdmin && (
           <div className="flex flex-col gap-2">
             <Button
@@ -120,28 +117,35 @@ export default function OrderCard(props: {
         </Badge>
       </div>
       <div className="flex justify-center items-center py-2 relative">
-        <div className="flex">
-          <div className="flex flex-col max-w-64 md:min-w-96 gap-2">
-            {order.items.map((item) => (
-              <Item
-                key={`${order.id}-${item.name}-${Math.random()}`}
-                variant="outline"
-                className="flex flex-col items-center"
-              >
+        <div className="flex flex-col gap-2 w-80">
+          {order.items.map((item) => (
+            <div
+              key={`${order.id}-${item.name}-${Math.random()}`}
+              className="border rounded-md p-2 flex justify-between items-center gap-2"
+            >
+              <div className="flex items-center gap-2">
+                <Image
+                  src={`/${
+                    item.name === "パンケーキ" ? "pancake" : "crepe"
+                  }.svg`}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                />
                 <div className="text-xl font-bold">{item.name}</div>
-                <div className="flex flex-wrap gap-2">
-                  {item.toppings.map((topping) => (
-                    <div key={topping.name} className="flex items-center gap-2">
-                      <ToppingBadge
-                        name={topping.name}
-                        quantity={topping.quantity}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </Item>
-            ))}
-          </div>
+              </div>
+              <div className="flex flex-col gap-1 items-end">
+                {item.toppings.flatMap((topping) =>
+                  Array.from({ length: topping.quantity }).map((_, i) => (
+                    <ToppingBadge
+                      key={`${topping.name}-${i}`}
+                      name={topping.name}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

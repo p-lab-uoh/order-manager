@@ -6,23 +6,42 @@ const colored = (name: string) => {
       return "bg-[#6C3524]";
     case "蜂蜜":
     case "はちみつ":
-      return "bg-[#E7BB5E]";
+      return "bg-orange-200 text-base-800";
     case "メープルシロップ":
       return "bg-[#C55A39]";
     case "ケチャップ":
-      return "bg-[#EA5549]";
+      return "bg-red-500";
     case "マスタード":
-      return "bg-[#E1AD01]";
+      return "bg-yellow-500";
     case "キャラメル":
-      return "bg-[#D2691E]";
+      return "bg-teal-400";
   }
 };
 
-export function ToppingBadge(props: { name: string; quantity: number }) {
+const icons = (name: string) => {
+  switch (name) {
+    case "チョコソース":
+      return "🍫";
+    case "蜂蜜":
+    case "はちみつ":
+      return "🍯";
+    case "メープルシロップ":
+      return "🍁";
+    case "ケチャップ":
+      return "🍅";
+    case "マスタード":
+      return "🌭";
+    case "キャラメル":
+      return "🍬";
+  }
+};
+
+export function ToppingBadge(props: { name: string }) {
   return (
     <div className="flex items-center gap-2">
-      <Badge className={colored(props.name)}>{props.name}</Badge>x{" "}
-      {props.quantity}
+      <Badge className={colored(props.name)}>
+        {icons(props.name)} {props.name}
+      </Badge>
     </div>
   );
 }
