@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +9,13 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Item } from "@/components/ui/item";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { callOrder } from "@/services/orders/call";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToppingBadge } from "./ToppingBadge";
@@ -82,7 +89,7 @@ export default function OrderCard(props: {
         }`}
       >
         <div className="flex flex-col items-center font-bold text-xl">
-          <div>番号札</div>
+          {/* <div>番号札</div> */}
           <div className="flex text-8xl font-extrabold">{order.tag}</div>
         </div>
         {isAdmin && (
@@ -126,19 +133,34 @@ export default function OrderCard(props: {
               <Item
                 key={`${order.id}-${item.name}-${Math.random()}`}
                 variant="outline"
-                className="flex flex-col items-center"
               >
-                <div className="text-xl font-bold">{item.name}</div>
-                <div className="flex flex-wrap gap-2">
-                  {item.toppings.map((topping) => (
-                    <div key={topping.name} className="flex items-center gap-2">
-                      <ToppingBadge
-                        name={topping.name}
-                        quantity={topping.quantity}
-                      />
-                    </div>
-                  ))}
-                </div>
+                <ItemMedia>
+                  <Image
+                    src={`/${
+                      item.name === "パンケーキ" ? "pancake" : "crepe"
+                    }.svg`}
+                    alt={item.name}
+                    width={48}
+                    height={48}
+                  />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>
+                    <div className="text-xl font-bold">{item.name}</div>
+                  </ItemTitle>
+                </ItemContent>
+                <ItemActions>
+                  <div className="flex flex-col gap-1 items-end">
+                    {item.toppings.flatMap((topping) =>
+                      Array.from({ length: topping.quantity }).map((_, i) => (
+                        <ToppingBadge
+                          key={`${topping.name}-${i}`}
+                          name={topping.name}
+                        />
+                      ))
+                    )}
+                  </div>
+                </ItemActions>
               </Item>
             ))}
           </div>
